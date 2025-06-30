@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What to Do If I Have Time?</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1e90ff, #ff8c00);
+      text-align: center;
+      color: white;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      animation: backgroundMove 10s infinite alternate;
+    }
+    @keyframes backgroundMove {
+      0% { background: linear-gradient(135deg, #1e90ff, #ff8c00); }
+      100% { background: linear-gradient(135deg, #ff4500, #32cd32); }
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+    input {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    button {
+      background: #ff4500;
+      color: white;
+      padding: 15px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #ff6347;
+      transform: scale(1.1);
+    }
+    #activity {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .gif-container {
+      margin-top: 15px;
+    }
+    .gif-container img {
+      width: 250px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>What Should I Do If I Have Time? ⏳</h1>
+    <p>Enter your available time (minutes) ⏰</p>
+    <input type="number" id="timeInput" placeholder="Enter time in minutes" />
+    <button onclick="suggestActivity()">🎁 Suggest an Activity</button>
+    <p id="activity"></p>
+    <div class="gif-container" id="gifContainer"></div>
+  </div>
+  <script>
+    const gifDatabase = [
+      "https://media.giphy.com/media/l0ExdMHUDKteztyfe/giphy.gif",
+      "https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif",
+      "https://media.giphy.com/media/3o7aCTfyhYawdOXcFW/giphy.gif",
+      "https://media.giphy.com/media/xT9IgIc0lryrxvqVGM/giphy.gif",
+      "https://media.giphy.com/media/3oKIPtjElfqwMOTbH2/giphy.gif",
+    ];
+
+    let lastActivity = "";
+
+    function generateAIStyleActivity(time) {
+      const suggestions = {
+        short: [
+          "Take a few deep breaths and smile 😊",
+          "Look out the window and rest your eyes 🌤️",
+          "Stand up and stretch your legs 🧘"
+        ],
+        quick: [
+          "Stretch your body or grab a glass of water 💧",
+          "Do a quick dance move 🕺",
+          "Write down one thing you're grateful for ✍️"
+        ],
+        moderate: [
+          "Listen to a short podcast or a song 🎧",
+          "Declutter your desk a bit 🧹",
+          "Check your to-do list 📝"
+        ],
+        medium: [
+          "Read a few pages of a book or an article 📖",
+          "Call a friend or send a kind message 💬",
+          "Plan your next meal 🍽️",
+          "Practice a new word in another language 🈚",
+          "Clean one drawer or shelf 🧼",
+          "Sketch something random ✏️",
+          "Do a guided meditation 🧘‍♂️"
+        ],
+        long: [
+          "Take a walk outside or organize your workspace 🚶‍♂️🧹",
+          "Do a 15-min workout 💪",
+          "Water your plants 🪴"
+        ],
+        veryLong: [
+          "Start learning a new skill online! 🚀",
+          "Work on a personal project ✨",
+          "Watch an inspiring talk 🎥"
+        ]
+      };
+
+      let options = [];
+
+      if (time <= 2) options = suggestions.short;
+      else if (time <= 5) options = suggestions.quick;
+      else if (time <= 10) options = suggestions.moderate;
+      else if (time <= 20) options = suggestions.medium;
+      else if (time <= 30) options = suggestions.long;
+      else options = suggestions.veryLong;
+
+      const filtered = options.filter(opt => opt !== lastActivity);
+      const chosen = filtered[Math.floor(Math.random() * filtered.length)];
+      lastActivity = chosen;
+
+      return chosen;
+    }
+
+    function suggestActivity() {
+      const time = parseInt(document.getElementById("timeInput").value);
+
+      if (isNaN(time) || time <= 0) {
+        document.getElementById("activity").innerText = "⏳ Hmm... 0 minutes? That's just enough time to blink! 😉";
+        document.getElementById("gifContainer").innerHTML = `<img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="No Time">`;
+        return;
+      }
+
+      const activity = generateAIStyleActivity(time);
+      const randomGif = gifDatabase[Math.floor(Math.random() * gifDatabase.length)];
+
+      document.getElementById("activity").innerText = activity;
+      document.getElementById("gifContainer").innerHTML = `<img src="${randomGif}" alt="Activity GIF">`;
+    }
+  </script>
+</body>
+</html>
